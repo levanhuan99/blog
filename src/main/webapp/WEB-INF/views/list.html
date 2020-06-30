@@ -8,16 +8,22 @@
 <a href="/blogs/blog_list">get blog list</a>
 <a href="/blogs/create">write a blog</a>
 <div>
-    <div th:each="blog: ${blogs}">
-        <h2 th:text="${blog.title}"></h2>
-        <p th:text="${blog.postTime}"></p><br>
-        <p th:text="${blog.content}"></p><br>
+    <th:block th:each="blog: ${blogs}">
+        <h2 th:text="*{blog.title}"></h2>
+
+        <p th:text="*{blog.postTime}"></p><br>
+        <p th:text="*{blog.content}"></p><br>
         <h4 th:text="${blog.author}"></h4>
         <a th:href="@{/blogs/like/{id}(id=${blog.id})}">like</a><p th:text="${blog.likes}" ></p>
-        <a th:href="@{/blogs/dislike/{id}(id=${blog.id})}">dislike</a><p th:text="${blog.dislike}" ></p>
+        <a th:href="@{/blogs/dislike/{id}(id=${blog.id})}">dislike</a><p th:text="${blog.dislike}"></p>
          ----------------------------------------------
-    </div>
+    </th:block>
 
+</div>
+<div>
+    <a th:href="@{'/blogs'(page=${blogs.number - 1})}" th:if="${blogs.hasPrevious()}">Previous</a>
+    <span th:text="${blogs.number + 1}"></span>/<span th:text="${blogs.totalPages}"></span>
+    <a th:href="@{'/blogs'(page=${blogs.number + 1})}" th:if="${blogs.hasNext()}">Next</a>
 </div>
 </body>
 </html>

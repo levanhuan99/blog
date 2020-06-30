@@ -17,7 +17,7 @@ public class Blog {
     private int dislike;
 
     @ManyToOne
-    @JoinColumn(name = "caegory_id")
+    @JoinColumn(name = "category_id")
     private Category category;
 
 

@@ -2,8 +2,13 @@ package com.huan.controllers;
 
 
 import com.huan.model.Blog;
+import com.huan.model.Category;
 import com.huan.service.BlogService;
+import com.huan.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,17 +23,25 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @ModelAttribute("categories")
+    public List<Category> categories(){
+        return (List<Category>) categoryService.finAll();
+    }
+
     @GetMapping()
-    public ModelAndView blog() {
-        List<Blog> list = blogService.getAllBlog();
+    public ModelAndView blog(@PageableDefault(size = 5) Pageable pageable) {
+        Page<Blog> list =blogService.getAllBlog(pageable);
         ModelAndView modelAndView = new ModelAndView("/list");
         modelAndView.addObject("blogs", list);
         return modelAndView;
     }
 
     @GetMapping("/blog_list")
-    public ModelAndView listBlog() {
-        List<Blog> list = blogService.getAllBlog();
+    public ModelAndView listBlog(Pageable pageable) {
+        Page<Blog> list =blogService.getAllBlog(pageable);
         ModelAndView modelAndView = new ModelAndView("/list_name");
         modelAndView.addObject("blogs", list);
         return modelAndView;

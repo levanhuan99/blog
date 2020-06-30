@@ -12,6 +12,12 @@
     <textarea name="content"></textarea><br>
     <p>author</p><br>
     <input name="author"><br>
+    <p>Category:</p>
+    <select th:field="*{categories}">
+        <option th:each="c:${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+    </select><br>
+
+
     <button>save</button>
 </form>
 

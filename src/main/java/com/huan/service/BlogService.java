@@ -1,12 +1,14 @@
 package com.huan.service;
 
 import com.huan.model.Blog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface BlogService {
 
-    List<Blog> getAllBlog();
+    Page<Blog> getAllBlog(Pageable pageable);
 
     Blog findById(Long id);
 
@@ -14,4 +16,5 @@ public interface BlogService {
 
     void delete(Long id);
 
+    List<Blog> getAllBlogs();
 }
