@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2 paddingTop20">
+            <nav class="nav-sidebar">
+                <ul class="nav">
+                    <li class="active"><a href="javascript:;"><span class="glyphicon glyphicon-star"></span> News</a>
+                    </li>
+                    <li><a href="javascript:;">Latest news</a></li>
+                    <li><a href="javascript:;">Updates</a></li>
+                    <li><a href="javascript:;">Training</a></li>
+                    <li><a href="javascript:;">Nutrition</a></li>
+                    <li><a href="javascript:;">Proteins</a></li>
+                    <li><a href="javascript:;">Recipes</a></li>
+                    <li><a href="javascript:;">Challenge</a></li>
+                    <li class="nav-divider"></li>
+                    <li><a href="javascript:;"><i class="glyphicon glyphicon-off"></i> Sign in</a></li>
+                </ul>
+            </nav>
+            <div><h2 class="add">Place for your add!</h2></div>
+        </div>
+
+        <div class="col-md-10 blogShort">
+            <h1 th:text="${blog.title}"></h1>
+
+            <article><p th:text="${blog.content}"></p></article>
+            <input type="hidden" id="blogId" th:value="${blog.id}"/>
+            <p th:text="${blog.postTime}"></p>
+            <p th:text="${blog.author}"></p>
+            <button id="commentButton" value="Comment" onclick="comment()">Comment</button>
+            <a class="btn btn-blog pull-right marginBottom10" href="/blogs">BACK</a>
+        </div>
+        <div>
+            <table>
+                <tr th:each=" c: ${comments}">
+                    <td th:text="${c.content}"></td>
+                    <td th:text="${c.postTime}"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="commentForm"></div>
+    </div>
+</div>
+<script>
+    function comment() {
+        //How to get comment form
+        document.getElementById('commentForm').innerHTML = formComment();
+    }
+
+    function formComment() {
+        return `
+           <div th:id=>
+               <textarea  id="content"></textarea>
+                <button  onclick="post()">Post</button>
+           </div>`;
+    }
+    function post() {
+        let content=document.getElementById("content").value;
+        let id=document.getElementById("blogId").value;
+        let comment= {
+            content : content,
+            blog_id : id
+        };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: 'http://localhost:8080/api/blog/saveComment',
+            type: 'POST',
+            data: JSON.stringify(comment),
+            success:showComment,
+            error: alertFail()
+        });
+        // $.ajax({
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     url: 'http://localhost:8080/api/blog/add',
+        //     type: 'POST',
+        //     data: JSON.stringify(blog),
+        //     success: alertSuccess,
+        //     error: alertFail
+        // });
+    }
+
+
+</script>
+<!--            <button type="button" class="btn btn-primary" onclick="likeBlog()">-->
+<!--                Like <span id="blogLikes" th:text="${blog.likes}" class="badge badge-light"></span>-->
+<!--            </button>-->
+
+<!--<script>-->
+
+<!--    function likeBlog() {-->
+
+<!--        let blogId = document.getElementById("blogId").value;-->
+
+<!--        $.ajax({-->
+<!--            headers: {-->
+<!--                'Accept': 'application/json',-->
+<!--                'Content-Type': 'application/json'-->
+<!--            },-->
+<!--            url: 'http://localhost:8080/api/blogs/' + blogId + '/likes',-->
+<!--            type: 'PUT',-->
+<!--            success: function (res) {-->
+<!--                document.getElementById('blogLikes').innerText = res.likes;-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--</script>-->
+
+</body>
+</html>

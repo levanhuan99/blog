@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+<div>
 <form method="post" action="/blogs/create">
     <p>blog tile</p><br>
     <input name="title"><br>
@@ -16,10 +17,8 @@
     <select th:field="*{categories}">
         <option th:each="c:${categories}" th:value="${c.id}" th:text="${c.name}"></option>
     </select><br>
-
-
     <button>save</button>
 </form>
-
+</div>
 </body>
 </html>

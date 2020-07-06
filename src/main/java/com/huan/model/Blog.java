@@ -2,6 +2,7 @@ package com.huan.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table
@@ -22,12 +23,36 @@ public class Blog {
 
 
 
+    @OneToMany(targetEntity = Comment.class, fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
     public Blog() {
+    }
+
+//    public Blog(Long id, String title, String author, Timestamp postTime, String content, int likes, int dislike, Category category, List<Comment> comments) {
+//        this.id = id;
+//        this.title = title;
+//        this.author = author;
+//        this.postTime = postTime;
+//        this.content = content;
+//        this.likes = likes;
+//        this.dislike = dislike;
+//        this.category = category;
+//        this.comments = comments;
+//    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public int getDislike() {
         return dislike;
     }
+
     public Category getCategory() {
         return category;
     }
@@ -35,6 +60,7 @@ public class Blog {
     public void setCategory(Category category) {
         this.category = category;
     }
+
     public void setDislike(int dislike) {
         this.dislike = dislike;
     }

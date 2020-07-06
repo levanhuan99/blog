@@ -5,6 +5,7 @@ import com.huan.model.Blog;
 import com.huan.model.Category;
 import com.huan.service.BlogService;
 import com.huan.service.CategoryService;
+import com.huan.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ public class BlogController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CommentService commentService;
 
     @ModelAttribute("categories")
     public List<Category> categories(){
@@ -77,27 +81,31 @@ public class BlogController {
         blog.setPostTime(timestamp);
         blogService.save(blog);
         return "redirect:/blogs";
-
     }
-
     @RequestMapping("/like/{id}")
-    public String like(@PathVariable Long id) {
+    @ResponseBody
+    public Blog like(@PathVariable Long id) {
         Blog blog = blogService.findById(id);
-        blog.setLikes(blog.getLikes() + 1);
+//        blog.setLikes(blog.getLikes() + 1);
         blogService.save(blog);
-        return "redirect:/blogs";
+        return blog;
 
     }
-
     @RequestMapping("/dislike/{id}")
-
     public String dislike(@PathVariable Long id) {
         Blog blog = blogService.findById(id);
 
         blog.setDislike(blog.getDislike() + 1);
         blogService.save(blog);
         return "redirect:/blogs";
+    }
 
-
+    @GetMapping("/blog-detail/{id}")
+    public ModelAndView showDetail(@PathVariable Long id){
+        ModelAndView modelAndView=new ModelAndView("/blog_detail");
+        modelAndView.addObject("blog",blogService.findById(id));
+        modelAndView.addObject("comments",commentService.findAllByBlog_Id(id));
+        return modelAndView;
+     //   return new ModelAndView("/blog_detail","blog",blogService.findById(id));
     }
 }

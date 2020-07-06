@@ -18,8 +18,6 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogRepository blogRepository;
 
-
-
     @Override
     public Page<Blog> getAllBlog(Pageable pageable) {
 

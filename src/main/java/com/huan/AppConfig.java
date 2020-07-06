@@ -1,10 +1,7 @@
 package com.huan;
 
 import com.huan.Formatter.CategoryFomater;
-import com.huan.service.BlogService;
-import com.huan.service.BlogServiceImpl;
-import com.huan.service.CategoryService;
-import com.huan.service.CategoryServiceImpl;
+import com.huan.service.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -126,6 +123,11 @@ public class AppConfig   extends WebMvcConfigurerAdapter implements ApplicationC
         return new CategoryServiceImpl();
     }
 
+
+    @Bean
+    public CommentService commentService(){
+        return new CommentServiceImpl();
+    }
     @Override
     public void addFormatters(FormatterRegistry registry){
         registry.addFormatter(new CategoryFomater(applicationContext.getBean(CategoryService.class)));

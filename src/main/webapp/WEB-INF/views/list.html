@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <a href="/blogs/blog_list">get blog list</a>
-<a href="/blogs/create">write a blog</a>
+<a href="/blogs/create">write a blog</a><br>
 <div>
-    <th:block th:each="blog: ${blogs}">
-        <h2 th:text="*{blog.title}"></h2>
+    <p>blog tile</p><br>
+    <input id="add_title"><br>
+    <p>blog content</p><br>
+    <textarea id="add_content"></textarea><br>
+    <p>author</p><br>
+    <input id="add_author"><br>
+</div>
+<input type="submit" value="create blog" onclick="add()">
+<div id="add-form"></div>
+<div>
+    <th:block th:each="blog : ${blogs}">
+        <input th:value="*{blog.id}" type="hidden">
+        <h2 id="title" th:text="*{blog.title}"></h2>
+        <p id="postTime" th:text="*{blog.postTime}"></p><br>
+        <p id="content" th:text="*{blog.content}"></p><br>
+        <h4 id="author" th:text="${blog.author}"></h4>
+        <!--        <a th:href="@{/blogs/like/{id}(id=${blog.id})}">like</a>-->
+        <input type="submit" value="like" onclick="like($(this))" th:name="*{blog.id}"/>
+        <p th:text="${blog.likes}"  th:id="${blog.id}"></p>
+        <a th:href="@{/blogs/dislike/{id}(id=${blog.id})}">dislike</a>
+        <p th:text="${blog.dislike}"></p>
 
-        <p th:text="*{blog.postTime}"></p><br>
-        <p th:text="*{blog.content}"></p><br>
-        <h4 th:text="${blog.author}"></h4>
-        <a th:href="@{/blogs/like/{id}(id=${blog.id})}">like</a><p th:text="${blog.likes}" ></p>
-        <a th:href="@{/blogs/dislike/{id}(id=${blog.id})}">dislike</a><p th:text="${blog.dislike}"></p>
-         ----------------------------------------------
+        <a th:href="@{/blogs/blog-detail/{id}(id=${blog.id})}">show detail</a><br>
+        ----------------------------------------------
     </th:block>
 
 </div>
@@ -25,5 +41,67 @@
     <span th:text="${blogs.number + 1}"></span>/<span th:text="${blogs.totalPages}"></span>
     <a th:href="@{'/blogs'(page=${blogs.number + 1})}" th:if="${blogs.hasNext()}">Next</a>
 </div>
+
+<script>
+    function add() {
+        let title = document.getElementById("add_title").value;
+        let author = document.getElementById("add_author").value;
+        let content = document.getElementById("add_content").value;
+        // let smartphone = {
+        //     producer: producer,
+        //     model: model,
+        //     price: price
+        // };
+        let blog = {
+            title: title,
+            author: author,
+            content: content
+        };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: 'http://localhost:8080/api/blog/add',
+            type: 'POST',
+            data: JSON.stringify(blog),
+            success: alertSuccess,
+            error: alertFail
+        });
+    }
+
+    function alertSuccess() {
+        alert("ok");
+    }
+
+    function alertFail() {
+        alert("failed");
+    }
+
+    function like(s) {
+
+        let id = s.attr("name");
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: 'http://localhost:8080/api/blog/' + id,
+            type: 'PUT',
+            data: JSON.stringify(id),
+            success: successed,
+            error: failed
+        });
+    }
+
+    function successed(response) {
+        document.getElementById(response.id).innerHTML = response.likes;
+    }
+
+    function failed(xhr) {
+        let errorMessage = xhr.status + ': ' + xhr.statusText;
+        alert("like fail "+ errorMessage );
+    }
+</script>
 </body>
 </html>
