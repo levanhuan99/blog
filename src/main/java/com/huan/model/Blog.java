@@ -29,18 +29,6 @@ public class Blog {
     public Blog() {
     }
 
-//    public Blog(Long id, String title, String author, Timestamp postTime, String content, int likes, int dislike, Category category, List<Comment> comments) {
-//        this.id = id;
-//        this.title = title;
-//        this.author = author;
-//        this.postTime = postTime;
-//        this.content = content;
-//        this.likes = likes;
-//        this.dislike = dislike;
-//        this.category = category;
-//        this.comments = comments;
-//    }
-
     public List<Comment> getComments() {
         return comments;
     }

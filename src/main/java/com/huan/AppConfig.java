@@ -32,9 +32,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@EnableSpringDataWebSupport
+
 @Configuration
 @EnableWebMvc
+@EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableJpaRepositories("com.huan.repositories")
 @ComponentScan("com.huan")
@@ -97,6 +98,12 @@ public class AppConfig   extends WebMvcConfigurerAdapter implements ApplicationC
         dataSource.setPassword( "123456" );
         return dataSource;
     }
+    Properties additionalProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        return properties;
+    }
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
@@ -105,12 +112,7 @@ public class AppConfig   extends WebMvcConfigurerAdapter implements ApplicationC
         return transactionManager;
     }
 
-    Properties additionalProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-        return properties;
-    }
+
 
     @Bean
     public BlogService blogService(){

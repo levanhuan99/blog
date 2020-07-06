@@ -40,39 +40,32 @@
             <input type="hidden" id="blogId" th:value="${blog.id}"/>
             <p th:text="${blog.postTime}"></p>
             <p th:text="${blog.author}"></p>
-            <button id="commentButton" value="Comment" onclick="comment()">Comment</button>
+
             <a class="btn btn-blog pull-right marginBottom10" href="/blogs">BACK</a>
         </div>
         <div>
-            <table>
+            <table id="comments">
                 <tr th:each=" c: ${comments}">
                     <td th:text="${c.content}"></td>
                     <td th:text="${c.postTime}"></td>
                 </tr>
             </table>
         </div>
-        <div id="commentForm"></div>
+        <div>
+            <textarea id="content"></textarea>
+            <button onclick="addComment()">Comment</button>
+        </div>
+        `
     </div>
 </div>
 <script>
-    function comment() {
-        //How to get comment form
-        document.getElementById('commentForm').innerHTML = formComment();
-    }
+    function addComment() {
+        let content = document.getElementById("content").value;
+        let id = document.getElementById("blogId").value;
 
-    function formComment() {
-        return `
-           <div th:id=>
-               <textarea  id="content"></textarea>
-                <button  onclick="post()">Post</button>
-           </div>`;
-    }
-    function post() {
-        let content=document.getElementById("content").value;
-        let id=document.getElementById("blogId").value;
-        let comment= {
-            content : content,
-            blog_id : id
+        // làm thế nào để chuyền cả blog_id ở đây vào đối tượng comment
+        let comment = {
+            content: content,
         };
         $.ajax({
             headers: {
@@ -82,48 +75,27 @@
             url: 'http://localhost:8080/api/blog/saveComment',
             type: 'POST',
             data: JSON.stringify(comment),
-            success:showComment,
-            error: alertFail()
+            success: successHandler,
+            error: fail
         });
-        // $.ajax({
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     url: 'http://localhost:8080/api/blog/add',
-        //     type: 'POST',
-        //     data: JSON.stringify(blog),
-        //     success: alertSuccess,
-        //     error: alertFail
-        // });
+
+
+    }
+
+    function successHandler() {
+        let id = document.getElementById("blogId").value;
+        $.ajax({
+            url: 'http://localhost:8080/api/blog/getAllComment',
+            type: 'GET',
+            success: showCommentList
+        });
+
+    }
+    function fail() {
+
     }
 
 
 </script>
-<!--            <button type="button" class="btn btn-primary" onclick="likeBlog()">-->
-<!--                Like <span id="blogLikes" th:text="${blog.likes}" class="badge badge-light"></span>-->
-<!--            </button>-->
-
-<!--<script>-->
-
-<!--    function likeBlog() {-->
-
-<!--        let blogId = document.getElementById("blogId").value;-->
-
-<!--        $.ajax({-->
-<!--            headers: {-->
-<!--                'Accept': 'application/json',-->
-<!--                'Content-Type': 'application/json'-->
-<!--            },-->
-<!--            url: 'http://localhost:8080/api/blogs/' + blogId + '/likes',-->
-<!--            type: 'PUT',-->
-<!--            success: function (res) {-->
-<!--                document.getElementById('blogLikes').innerText = res.likes;-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-
-<!--</script>-->
-
 </body>
 </html>
