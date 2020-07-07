@@ -63,9 +63,11 @@
         let content = document.getElementById("content").value;
         let id = document.getElementById("blogId").value;
 
-        // làm thế nào để chuyền cả blog_id ở đây vào đối tượng comment
         let comment = {
-            content: content,
+            "content": content,
+            "blog":{
+                id: id
+            }
         };
         $.ajax({
             headers: {
@@ -78,8 +80,6 @@
             success: successHandler,
             error: fail
         });
-
-
     }
 
     function successHandler() {
