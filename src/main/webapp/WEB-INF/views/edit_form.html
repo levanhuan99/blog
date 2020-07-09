@@ -6,7 +6,7 @@
 </head>
 <body>
 <form method="post" action="/blogs/update" th:object="${blog}">
-    <input th:field="*{id}" type="hidden">
+    <input th:field="*{id+1}" type="hidden">
     <p>blog tile</p><br>
     <input th:field="*{title}"><br>
     <p>blog content</p><br>

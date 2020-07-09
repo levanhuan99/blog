@@ -45,16 +45,19 @@ public class BlogControllerAPI {
         return blog;
     }
 
-    @PostMapping("/saveComment")
-    public void saveComment(@RequestBody Comment comment) {
+    @PostMapping("/saveComment/{id}")
+    public void saveComment(@PathVariable Long id ,@RequestBody Comment comment) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Blog blog = blogService.findById(id);
         comment.setPostTime(timestamp);
+        comment.setBlog(blog);
         commentService.save(comment);
     }
 
-    @GetMapping("/getAllComment")
-    public List<Comment> getAllComment(@RequestBody Long id) {
-        return commentService.findAllByBlog_Id(id);
+    @GetMapping("/getAllComment/{id}")
+    public List<Comment> getAllComment(@PathVariable Long id) {
+        List<Comment> list= commentService.findAllByBlog_Id(id);
+        return list;
     }
 }
 

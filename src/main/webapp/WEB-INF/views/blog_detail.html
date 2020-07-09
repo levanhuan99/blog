@@ -35,7 +35,6 @@
 
         <div class="col-md-10 blogShort">
             <h1 th:text="${blog.title}"></h1>
-
             <article><p th:text="${blog.content}"></p></article>
             <input type="hidden" id="blogId" th:value="${blog.id}"/>
             <p th:text="${blog.postTime}"></p>
@@ -45,17 +44,26 @@
         </div>
         <div>
             <table id="comments">
-                <tr th:each=" c: ${comments}">
-                    <td th:text="${c.content}"></td>
-                    <td th:text="${c.postTime}"></td>
+                <thead>
+                <tr>
+                    <th>comment</th>
+                    <th>post time</th>
                 </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="c : ${comments}">
+                    <tr>
+                        <td th:text="${c.content}"></td>
+                        <td th:text="${c.postTime}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
             </table>
         </div>
         <div>
             <textarea id="content"></textarea>
             <button onclick="addComment()">Comment</button>
         </div>
-        `
     </div>
 </div>
 <script>
@@ -65,16 +73,16 @@
 
         let comment = {
             "content": content,
-            "blog":{
-                id: id
-            }
+            // "blog":{
+            //     id: id
+            // }
         };
         $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            url: 'http://localhost:8080/api/blog/saveComment',
+            url: 'http://localhost:8080/api/blog/saveComment/' + id,
             type: 'POST',
             data: JSON.stringify(comment),
             success: successHandler,
@@ -85,14 +93,40 @@
     function successHandler() {
         let id = document.getElementById("blogId").value;
         $.ajax({
-            url: 'http://localhost:8080/api/blog/getAllComment',
+            url: 'http://localhost:8080/api/blog/getAllComment/' + id,
             type: 'GET',
-            success: showCommentList
+
+            success: showCommentList,
         });
 
     }
-    function fail() {
 
+    function fail() {
+        aler("comment fail!!! try again");
+    }
+
+    function showCommentList(response) {
+        //show list comment here
+        let tableContent =`<thead>
+        <tr>
+               <th>comment</th>
+               <th>post time</th>
+        </tr>
+        </thead>
+        <tbody>`;
+        for (let i = 0; i < response.length; i++) {
+            tableContent += getCommentRow(response[i]);
+        }
+        tableContent += `</tbody>`;
+        document.getElementById('comments').innerHTML = tableContent;
+        document.getElementById('comments').innerHTML=" ";
+    }
+
+    function getCommentRow(comment) {
+        return `<tr>
+                    <td > ${comment.content}</td>
+                    <td> ${comment.postTime}</td>
+                </tr>`;
     }
 
 
